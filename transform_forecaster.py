@@ -17,6 +17,59 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.models import Sequential
 
 
+def stock_data_pull(basket,verb=True):
+  """
+  Download Stock data
+  """
+  stock_final = pd.DataFrame()
+  # iterate over each symbol
+  for i in basket:  
+      
+      # print the symbol which is being downloaded
+      if verb:
+        print( str(basket.index(i)) + str(' : ') + i, sep=',', end=',', flush=True)  
+      try:
+          # download the stock price 
+          stock = []
+          #stock = yf.download(i,period = "2y",interval='5m', progress=False)
+          # for intraday yahoo finance only let's you pull past 60 days. 
+          # however there is only a 1 month option
+          stock = yf.download(i,period = "1mo",interval='5m', progress=False)
+
+          # append the individual stock prices 
+          if len(stock) == 0:
+              None
+          else:
+              stock['Name']=i
+              stock_final = stock_final.append(stock,sort=False)
+      except Exception:
+          None
+  print(stock_final.columns)
+  stock_final.reset_index(inplace=True)
+  # return dataframe with only key columns: 'Datetime','Close','Volume','Name'
+  stock_final = stock_final[['Datetime','Close','Volume','Name']].copy()
+  return stock_final
+
+#def fill_blanks(df,srl_num,range,value_variable,date_variable):
+def fill_blanks(df,srl_num,range,date_variable):
+
+  """
+  fills missing observations
+  some stocks may not have the same number of observations
+  """
+  stage_df = df.copy()
+  for comb in stage_df[srl_num].unique(): 
+    temp = stage_df[stage_df[srl_num] == comb].copy()
+    stage_df = stage_df[stage_df[srl_num] != comb] # remove existing series detail
+    temp2 = range.merge(temp,how='left',on=date_variable)
+    # since we are filling missing data, other fields will be missing to
+    # value info will be filled by zero, for other fields, we simply forward fill
+    # Then back fill for full missing value coverage    
+    temp2.fillna(method='ffill',inplace=True)
+    temp2.fillna(method='bfill',inplace=True)
+    # replace with new, full data subset
+    stage_df = stage_df.append(temp2,ignore_index=True)
+  return stage_df
 
 def change_shape(temp):
   """ puts the input vector into the shape needed by the 
