@@ -14,8 +14,10 @@ from transform_forecaster import fill_blanks
 
 exp_cols = ['symbol','symbol_time','close', 'volume']
 
+############### Removed
+
 @cdsw.model_metrics
-def forecast_price(args):
+def test_forecast_price(args):
     
     window = 60      
     # read in data direction from kudu (in json format)
@@ -40,25 +42,19 @@ def forecast_price(args):
     
     # reshape
     input_array = input_array.reshape(i+1,window,1)
-       # predict
-    #recon_model = keras.models.load_model("home/cdsw/saved_models/model_01_17_23")
-    try:
-        recon_model = keras.models.load_model("saved_models/model_01_17_23")
-    except:
-        cwd = os.getcwd()
-        print('current working directory is: ',cwd)
-        path = "/home/cdsw/saved_models/model_01_17_23"
-        dir_list = os.listdir(path)
-        print("Files and directories in '", path, "' :")
-        recon_model = keras.models.load_model(path)
-        
     
-    prediction = recon_model.predict(input_array).tolist()
+    # predict
+    recon_model = keras.models.load_model("saved_models/model_01_17_23")
+
+############### Removed
+
+#     prediction = recon_model.predict(input_array).tolist()
     
     
-    # output prep ## added this section to provide other relavent into
-    pred_time_list = [stock_ready.symbol_time.max()]*(i+1)
-    output = {'symbol':symbol_list,'pred_time':pred_time_list,'prediction':prediction}
+#     # output prep ## added this section to provide other relavent into
+#     pred_time_list = [stock_ready.symbol_time.max()]*(i+1)
+#     output = {'symbol':symbol_list,'pred_time':pred_time_list,'prediction':prediction}
 
     
-    return output
+    return    
+  #  return output

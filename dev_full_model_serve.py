@@ -33,12 +33,7 @@ def mkt_movement(args):
     stk_rdy_2, cols =  feature_create(stock_ready,tckr_list, window,lags,features,clip=True,tckr='symbol',date='symbol_time',close='close')
     
     # predict
-#    pipe_rf = load("pipe_rf.joblib")
-    # try:
-    #     pipe_rf = load("saved_models/pipe_rf.joblib")
-    # except:
-    #     pipe_rf = load("/home/cdsw/saved_models/pipe_rf.joblib")
-        
+    pipe_rf = load("saved_models/pipe_rf.joblib")
     prediction = pipe_rf.predict(stk_rdy_2[cols])      
     
     # output prep ## added this section to provide other relavent into
