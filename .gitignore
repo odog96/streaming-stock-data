@@ -3,6 +3,7 @@ node_modules
 *.pyc
 __pycache__
 /saved_models
+/model_01_17_23
 .*
 !.gitignore
 !.experiments
