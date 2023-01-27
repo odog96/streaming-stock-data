@@ -18,8 +18,8 @@ exp_cols = ['symbol','symbol_time','close', 'volume']
 def forecast_price(args):
     
     window = 60      
-    # read in data direction from kudu (in json format)
-    data = pd.DataFrame.from_dict(args)
+    #data = pd.DataFrame.from_dict(args)
+    data = pd.DataFrame.from_dict(args['data'])
     data = data[exp_cols]
     
     # fill missing data

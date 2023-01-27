@@ -20,7 +20,9 @@ def mkt_movement(args):
     lags = 6
     
     # read in data direction from kudu (in json format)
-    data = pd.DataFrame.from_dict(args)
+    data = pd.DataFrame.from_dict(args['data'])
+    print('show the names of columns:',data.columns)
+    print('show first few records:',data.head())
     data = data[exp_cols]
     
     # fill missing data
@@ -33,7 +35,11 @@ def mkt_movement(args):
     stk_rdy_2, cols =  feature_create(stock_ready,tckr_list, window,lags,features,clip=True,tckr='symbol',date='symbol_time',close='close')
     
     # predict
-    pipe_rf = load("saved_models/pipe_rf.joblib")
+#    pipe_rf = load("pipe_rf.joblib")
+    pipe_rf = load("pipe_rf.joblib")
+
+            
+        
     prediction = pipe_rf.predict(stk_rdy_2[cols])      
     
     # output prep ## added this section to provide other relavent into
